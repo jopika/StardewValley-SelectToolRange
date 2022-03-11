@@ -1,0 +1,10 @@
+{
+  "Name": "SelectToolRange",
+  "Author": "Jopika",
+  "Version": "0.1.0",
+  "Description": "Allows for players to easily use upgraded tools without having to charge up each time.",
+  "UniqueID": "Jopika.SelectToolRange",
+  "EntryDll": "SelectToolRange.dll",
+  "MinimumApiVersion": "2.10.0",
+  "UpdateKeys": []
+}
