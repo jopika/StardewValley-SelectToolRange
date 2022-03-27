@@ -38,33 +38,34 @@ namespace QuickEat {
             // check if mod is disabled
             if (!Config.EnableQuickEat) return;
 
-            if (IsConfirmationShown(out var eatMenu)) {
-                // Check if name is coffee or related objects
-                var consumedItemName = Game1.player.itemToEat.Name.ToLower();
-                if (Config.SkipPromptForCoffee)
-                    switch (consumedItemName) {
-                        case "coffee":
-                        case "triple shot espresso":
-                            SkipDialogMenu(eatMenu);
-                            return;
-                        default:
-                            break;
-                    }
-
-                if (Config.AlwaysShowPromptWhenHealthEnergyIsFull) {
-                    // Check if Player has full health or energy
-                    var fullHealth = Game1.player.health == Game1.player.maxHealth;
-                    var fullStamina = Game1.player.stamina.CompareTo(Game1.player.maxStamina) == 0;
-                    if (!fullHealth || !fullStamina) {
+            // If no dialog menu shown, exit out immediately
+            if (!IsConfirmationShown(out var eatMenu)) return;
+            
+            // Check if name is coffee or related objects
+            var consumedItemName = Game1.player.itemToEat.Name.ToLower();
+            if (Config.SkipPromptForCoffee)
+                switch (consumedItemName) {
+                    case "coffee":
+                    case "triple shot espresso":
                         SkipDialogMenu(eatMenu);
                         return;
-                    }
-
-                    return;
+                    default:
+                        break;
                 }
 
+            // Check if we should still prompt if energy/health is full
+            if (Config.AlwaysShowPromptWhenHealthEnergyIsFull) {
+                // Check if Player has full health or energy
+                var fullHealth = Game1.player.health == Game1.player.maxHealth;
+                var fullStamina = Game1.player.stamina.CompareTo(Game1.player.maxStamina) == 0;
+                if (fullHealth && fullStamina) return;
+
                 SkipDialogMenu(eatMenu);
+                return;
             }
+            
+            // Mod is enabled, and energy/health is not full (when config enabled)
+            SkipDialogMenu(eatMenu);
         }
 
         private void SkipDialogMenu(DialogueBox eatMenu) {
