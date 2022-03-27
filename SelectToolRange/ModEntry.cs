@@ -5,10 +5,8 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
-namespace DefaultToolPowerSelect
-{
-    public class ModEntry : Mod
-    {
+namespace DefaultToolPowerSelect {
+    public class ModEntry : Mod {
         private Dictionary<SButton, Func<bool>> buttonTriggers;
 
         /// <summary>The mod configuration.</summary>
@@ -30,8 +28,7 @@ namespace DefaultToolPowerSelect
         /// Beginning point of the Mod, loads in config and set up event handlers
         /// </summary>
         /// <param name="helper"></param>
-        public override void Entry(IModHelper helper)
-        {
+        public override void Entry(IModHelper helper) {
             Config = Helper.ReadConfig<ModConfig>();
 
             buttonTriggers = new Dictionary<SButton, Func<bool>>();
@@ -54,24 +51,20 @@ namespace DefaultToolPowerSelect
         ///     Loads the configuration file, and some of the buttons in memory
         /// </summary>
         /// <returns></returns>
-        private bool LoadConfig()
-        {
+        private bool LoadConfig() {
             var success = true;
-            if (!Enum.TryParse(Config.EnableKey, true, out SButton enableButton))
-            {
+            if (!Enum.TryParse(Config.EnableKey, true, out SButton enableButton)) {
                 success = false;
                 Monitor.Log($"[Error] Invalid key specified to EnableKey: {Config.EnableKey}", LogLevel.Error);
             }
 
-            if (!Enum.TryParse(Config.ResetPowerLevelKey, true, out SButton resetPowerLevelButton))
-            {
+            if (!Enum.TryParse(Config.ResetPowerLevelKey, true, out SButton resetPowerLevelButton)) {
                 success = false;
                 Monitor.Log($"[Error] Invalid key specified to ResetPowerLevelKey: {Config.ResetPowerLevelKey}",
                     LogLevel.Error);
             }
 
-            if (!Enum.TryParse(Config.SavePowerLevelKey, true, out SButton savePowerLevelButton))
-            {
+            if (!Enum.TryParse(Config.SavePowerLevelKey, true, out SButton savePowerLevelButton)) {
                 success = false;
                 Monitor.Log($"[Error] Invalid key specified to SavePowerLevelKey: {Config.SavePowerLevelKey}",
                     LogLevel.Error);
@@ -90,8 +83,7 @@ namespace DefaultToolPowerSelect
         ///     Toggles the mod status, and displays a message to the user that it is enabled or disabled
         /// </summary>
         /// <returns></returns>
-        private bool ToggleModStatus()
-        {
+        private bool ToggleModStatus() {
             modActive = !modActive;
             if (modActive)
                 Game1.addHUDMessage(new HUDMessage("[SelectToolRange] Enabled", Color.Green, 800f, false));
@@ -104,8 +96,7 @@ namespace DefaultToolPowerSelect
         ///     Saves the power level for the given tool, the the mod is active
         /// </summary>
         /// <returns></returns>
-        private bool SavePowerLevel()
-        {
+        private bool SavePowerLevel() {
             // TODO: Complete this
 
             if (!modActive) return true;
@@ -127,8 +118,7 @@ namespace DefaultToolPowerSelect
         ///     Resets the saved power level for the given tool, if the mod is active
         /// </summary>
         /// <returns></returns>
-        private bool ResetPowerLevel()
-        {
+        private bool ResetPowerLevel() {
             // TODO: Complete this
 
             if (!modActive) return true;
@@ -136,8 +126,7 @@ namespace DefaultToolPowerSelect
 
             if (currentTool == null) return true;
 
-            if (savedPowerLevels.ContainsKey(currentTool))
-            {
+            if (savedPowerLevels.ContainsKey(currentTool)) {
                 Game1.addHUDMessage(new HUDMessage($"[SelectToolRange] Removed power for {currentTool.Name}", Color.Red,
                     2000f, true));
                 Monitor.Log($"Power level removed for tool: {currentTool.Name}");
@@ -153,16 +142,14 @@ namespace DefaultToolPowerSelect
         ///     anything
         /// </summary>
         /// <returns></returns>
-        private bool UsePowerLevel()
-        {
+        private bool UsePowerLevel() {
             if (!modActive) return true;
             var currentTool = Game1.player.CurrentTool;
             var originalPowerlevel = Game1.player.toolPower;
 
             if (currentTool == null) return true;
 
-            if (!Config.AlwaysReplacePower && originalPowerlevel != 0)
-            {
+            if (!Config.AlwaysReplacePower && originalPowerlevel != 0) {
                 Monitor.Log($"Skipping power override due to non-zero original power level ({originalPowerlevel})");
                 return true;
             }
@@ -175,8 +162,7 @@ namespace DefaultToolPowerSelect
             return true;
         }
 
-        private void OnButtonRelease(object sender, ButtonReleasedEventArgs e)
-        {
+        private void OnButtonRelease(object sender, ButtonReleasedEventArgs e) {
             // ignore if player hasn't loaded a save yet
             if (!Context.IsWorldReady) return;
 
@@ -184,19 +170,16 @@ namespace DefaultToolPowerSelect
             if (useToolKeys.Contains(e.Button)) UsePowerLevel();
         }
 
-        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
+        private void OnButtonPressed(object sender, ButtonPressedEventArgs e) {
             // ignore if player hasn't loaded a save yet
             if (!Context.IsWorldReady) return;
 
-            if (!pulledUseToolKeys)
-            {
+            if (!pulledUseToolKeys) {
                 pulledUseToolKeys = true;
                 Monitor.Log("Saving useKeys from game options");
 
                 foreach (var toolButton in Game1.options.useToolButton)
-                    if (!useToolKeys.Contains(toolButton.ToSButton()))
-                    {
+                    if (!useToolKeys.Contains(toolButton.ToSButton())) {
                         useToolKeys.Add(toolButton.ToSButton());
                         Monitor.Log($"Added key: {toolButton.ToSButton()}");
                     }
